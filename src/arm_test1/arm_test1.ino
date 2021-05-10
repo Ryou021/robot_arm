@@ -22,6 +22,7 @@ const int TIMEOUT = 200;   //softSerialは通信失敗する可能性がある�
 
 IcsSoftSerialClass krs(S_RX_PIN, S_TX_PIN, EN_PIN, BAUDRATE, TIMEOUT); //インスタンス＋ENピン(2番ピン)およびUARTの設定、softSerial版
 
+int cou = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -34,12 +35,19 @@ void setup() {
 
 void loop() {
   // ここを原点とする
-  int servo4=min(max(map(analogRead(A2), 0, 1023, 3500, 11500), 3500), 11500);
-  int servo6=min(max(map(analogRead(A1), 0, 1023, 3500, 11500), 3500), 11500);
-  int servo7=min(max(map(analogRead(A0), 0, 1023, 3500, 11500), 3500), 11500);
+  cou++;
+  int servo4 = min(max(map(analogRead(A2), 0, 1023, 3500, 11500), 3500), 11500);
+  int servo6 = min(max(map(analogRead(A1), 0, 1023, 3500, 11500), 3500), 11500);
+  int servo7 = min(max(map(analogRead(A0), 0, 1023, 3500, 11500), 3500), 11500);
   krs.setPos(7, servo7); //位置指令　ID:0サーボを7500へ 中央
   krs.setPos(6, servo6); //位置指令　ID:0サーボを7500へ 中央
   krs.setPos(4, servo4); //位置指令　ID:0サーボを7500へ 中央
-  Serial.println(String(servo7) + "," + String(servo6) + ',' + String(servo4));
+  if (cou > 10) {
+    Serial.println("krs.setPos(7, " + String(servo7) + ");");
+    Serial.println("krs.setPos(6, " + String(servo6) + ");");
+    Serial.println("krs.setPos(4, " + String(servo4) + ");");
+    Serial.println("delay(100);");
+    cou = 0;
+  }
   delay(10);
 }
